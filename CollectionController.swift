@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CollectionController<Collection: TitleSectionedCollectionType where Collection.Element: ElementListable>: UITableViewController {
+class CollectionController<Collection: TitleSectionedCollectionType where Collection.Generator.Element: ElementListable>: UITableViewController {
     
     var collection: Collection {
         didSet {
@@ -17,8 +17,8 @@ class CollectionController<Collection: TitleSectionedCollectionType where Collec
         }
     }
     var refreshCallback: (() -> Void)?
-    var elementTouched: ((Collection.Element) -> Void)?
-    var elementAction: ((Collection.Element, String) -> Void)?
+    var elementTouched: ((Collection.Generator.Element) -> Void)?
+    var elementAction: ((Collection.Generator.Element, String) -> Void)?
 
     init(collection: Collection) {
         self.collection = collection
@@ -85,6 +85,7 @@ class CollectionController<Collection: TitleSectionedCollectionType where Collec
         for editAction in element.editActions() {
             let rowAction = UITableViewRowAction(style: editAction.style, title: editAction.title) {
                 [weak self] _, indexPath in
+                tableView.setEditing(false, animated: true)
                 self?.elementAction?(element, editAction.title)
             }
             rowActions.append(rowAction)

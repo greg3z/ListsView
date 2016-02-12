@@ -10,12 +10,18 @@ import Foundation
 
 protocol TitleSectionedCollectionType: CollectionType {
     
-    typealias Element
-    
     func numberOfSections() -> Int
     func numberOfElementsInSections(section: Int) -> Int
     func titleForSection(section: Int) -> String?
-    func elementAtIndexPath(indexPath: NSIndexPath) -> Element?
+    func elementAtSectionIndex(sectionIndex: Int, elementIndex: Int) -> Generator.Element?
+    
+}
+
+extension TitleSectionedCollectionType {
+    
+    func elementAtIndexPath(indexPath: NSIndexPath) -> Generator.Element? {
+        return elementAtSectionIndex(indexPath.section, elementIndex: indexPath.row)
+    }
     
 }
 
@@ -33,9 +39,9 @@ extension Array: TitleSectionedCollectionType {
         return nil
     }
     
-    func elementAtIndexPath(indexPath: NSIndexPath) -> Element? {
-        if indexPath.section == 0 && indexPath.row < count {
-            return self[indexPath.row]
+    func elementAtSectionIndex(sectionIndex: Int, elementIndex: Int) -> Generator.Element? {
+        if sectionIndex == 0 && elementIndex < count {
+            return self[elementIndex]
         }
         return nil
     }
@@ -56,11 +62,9 @@ extension Page: TitleSectionedCollectionType {
         return sections[section].title
     }
     
-    func elementAtIndexPath(indexPath: NSIndexPath) -> Element? {
-        if indexPath.section < sections.count && indexPath.row < sections[indexPath.section].count {
-            return self[indexPath.section][indexPath.row]
-        }
-        return nil
+    func elementAtSectionIndex(sectionIndex: Int, elementIndex: Int) -> Element? {
+        let pageIndex = PageIndex(sectionsSize: [], currentIndex: (sectionIndex, elementIndex))
+        return self[safe: pageIndex]
     }
     
 }
