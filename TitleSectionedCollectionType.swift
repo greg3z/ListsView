@@ -68,3 +68,24 @@ extension Page: TitleSectionedCollectionType {
     }
     
 }
+
+protocol MultiTitleSectionedCollectionType {
+    
+    typealias Collection: TitleSectionedCollectionType
+    
+    func numberOfPages() -> Int
+    func collectionForPage(pageIndex: Int) -> Collection
+    
+}
+
+extension Book: MultiTitleSectionedCollectionType {
+    
+    func numberOfPages() -> Int {
+        return pages.count
+    }
+    
+    func collectionForPage(pageIndex: Int) -> Page<Element> {
+        return pages[pageIndex]
+    }
+    
+}
