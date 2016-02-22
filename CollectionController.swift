@@ -20,9 +20,9 @@ class CollectionController<Collection: TitleSectionedCollectionType where Collec
     var elementTouched: ((Collection.Generator.Element) -> Void)?
     var elementAction: ((Collection.Generator.Element, String) -> Void)?
 
-    init(collection: Collection) {
+    init(collection: Collection, style: UITableViewStyle = .Plain) {
         self.collection = collection
-        super.init(nibName: nil, bundle: nil)
+        super.init(style: style)
     }
     
     override func viewDidLoad() {
