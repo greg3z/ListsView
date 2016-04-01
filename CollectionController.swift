@@ -34,7 +34,7 @@ class CollectionController<Collection: TitleSectionedCollectionType where Collec
         }
         if refreshCallback != nil {
             refreshControl = UIRefreshControl()
-            refreshControl?.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
+            refreshControl?.addTarget(self, action: #selector(refresh), forControlEvents: .ValueChanged)
         }
     }
     

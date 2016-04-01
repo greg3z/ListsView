@@ -71,7 +71,7 @@ extension Page: TitleSectionedCollectionType {
 
 protocol MultiTitleSectionedCollectionType {
     
-    typealias Collection: TitleSectionedCollectionType
+    associatedtype Collection: TitleSectionedCollectionType
     
     func numberOfPages() -> Int
     func collectionForPage(pageIndex: Int) -> Collection
