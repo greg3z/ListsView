@@ -13,11 +13,13 @@ class CollectionController<Collection: MultiTitleSectionedCollectionType where C
     let collection: Collection
     let collectionControllers: [SinglePageCollectionController<Collection.Collection>]
     
-    init(collection: Collection) {
+    init(collection: Collection, elementTouched: ((Collection.Collection.Generator.Element) -> Void)? = nil) {
         var collectionControllers = [SinglePageCollectionController<Collection.Collection>]()
         for i in 0..<collection.numberOfPages() {
             let subCollection = collection.collectionForPage(i)
-            collectionControllers.append(SinglePageCollectionController(collection: subCollection))
+            let singlePageController = SinglePageCollectionController(collection: subCollection)
+            singlePageController.elementTouched = elementTouched
+            collectionControllers.append(singlePageController)
         }
         self.collectionControllers = collectionControllers
         self.collection = collection
