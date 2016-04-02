@@ -1,52 +1,58 @@
 //
-//  MultiCollectionController.swift
-//  ListView
+//  MultiCollectionController2.swift
+//  FormViewController
 //
-//  Created by Grégoire Lhotellier on 12/02/2016.
+//  Created by Grégoire Lhotellier on 01/04/2016.
 //  Copyright © 2016 Grégoire Lhotellier. All rights reserved.
 //
 
-import Foundation
 import UIKit
 
-class MultiCollectionController<MultiCollection: MultiTitleSectionedCollectionType where MultiCollection.Collection.Generator.Element: ElementListable>: UIPageViewController, UIPageViewControllerDataSource {
+class MultiCollectionController<Collection: MultiTitleSectionedCollectionType where Collection.Collection.Generator.Element: ElementListable>: UIViewController, UIPageViewControllerDataSource {
     
-    var multiCollection: MultiCollection
-    var pageControllers = [UIViewController]()
-    var elementTouched: ((MultiCollection.Collection.Generator.Element) -> Void)?
+    let collection: Collection
+    let collectionControllers: [CollectionController<Collection.Collection>]
     
-    init(multiCollection: MultiCollection) {
-        self.multiCollection = multiCollection
-        super.init(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
-        dataSource = self
-        initPageControllers()
+    init(collection: Collection) {
+        var collectionControllers = [CollectionController<Collection.Collection>]()
+        for i in 0..<collection.numberOfPages() {
+            let subCollection = collection.collectionForPage(i)
+            collectionControllers.append(CollectionController(collection: subCollection))
+        }
+        self.collectionControllers = collectionControllers
+        self.collection = collection
+        super.init(nibName: nil, bundle: nil)
     }
     
-    func initPageControllers() {
-        for i in 0..<multiCollection.numberOfPages() {
-            let collection = multiCollection.collectionForPage(i)
-            let controller = CollectionController(collection: collection)
-            controller.elementTouched = {
-                element in
-                self.elementTouched?(element)
-            }
-            pageControllers.append(controller)
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        let controller: UIViewController
+        if collectionControllers.count == 1 {
+            controller = collectionControllers.first!
         }
-        setViewControllers([pageControllers.first!], direction: .Forward, animated: false, completion: nil)
+        else {
+            let pageController = UIPageViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
+            pageController.dataSource = self
+            pageController.setViewControllers([collectionControllers.first!], direction: .Forward, animated: false, completion: nil)
+            controller = pageController
+        }
+        controller.view.frame = view.bounds
+        view.addSubview(controller.view)
+        addChildViewController(controller)
     }
     
     // UIPageViewControllerDataSource
     
     func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
-        if let index = pageControllers.indexOf(viewController) where index > 0 {
-            return pageControllers[index - 1]
+        if let viewController = viewController as? CollectionController<Collection.Collection>, index = collectionControllers.indexOf(viewController) where index > 0 {
+            return collectionControllers[index - 1]
         }
         return nil
     }
     
     func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
-        if let index = pageControllers.indexOf(viewController) where index < pageControllers.count - 1 {
-            return pageControllers[index + 1]
+        if let viewController = viewController as? CollectionController<Collection.Collection>, index = collectionControllers.indexOf(viewController) where index < collectionControllers.count - 1 {
+            return collectionControllers[index + 1]
         }
         return nil
     }
