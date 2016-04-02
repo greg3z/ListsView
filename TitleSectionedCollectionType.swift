@@ -89,3 +89,27 @@ extension Book: MultiTitleSectionedCollectionType {
     }
     
 }
+
+extension Page: MultiTitleSectionedCollectionType {
+    
+    func numberOfPages() -> Int {
+        return 1
+    }
+    
+    func collectionForPage(pageIndex: Int) -> Page<Element> {
+        return self
+    }
+    
+}
+
+extension Array: MultiTitleSectionedCollectionType {
+    
+    func numberOfPages() -> Int {
+        return 1
+    }
+    
+    func collectionForPage(pageIndex: Int) -> Array<Element> {
+        return self
+    }
+    
+}
