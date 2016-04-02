@@ -10,7 +10,6 @@ import UIKit
 
 class CollectionController<Collection: MultiTitleSectionedCollectionType where Collection.Collection.Generator.Element: ElementListable>: UIViewController, UIPageViewControllerDataSource {
     
-    let collection: Collection
     let collectionControllers: [SinglePageCollectionController<Collection.Collection>]
     
     init(collection: Collection, elementTouched: ((Collection.Collection.Generator.Element) -> Void)? = nil) {
@@ -22,7 +21,6 @@ class CollectionController<Collection: MultiTitleSectionedCollectionType where C
             collectionControllers.append(singlePageController)
         }
         self.collectionControllers = collectionControllers
-        self.collection = collection
         super.init(nibName: nil, bundle: nil)
     }
     
