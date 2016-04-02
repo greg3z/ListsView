@@ -1,96 +1,60 @@
 //
-//  LCListController.swift
-//  Kawet
+//  MultiCollectionController2.swift
+//  FormViewController
 //
-//  Created by Grégoire Lhotellier on 12/01/2016.
-//  Copyright © 2016 Kawet. All rights reserved.
+//  Created by Grégoire Lhotellier on 01/04/2016.
+//  Copyright © 2016 Grégoire Lhotellier. All rights reserved.
 //
 
 import UIKit
 
-class CollectionController<Collection: TitleSectionedCollectionType where Collection.Generator.Element: ElementListable>: UITableViewController {
+class CollectionController<Collection: MultiTitleSectionedCollectionType where Collection.Collection.Generator.Element: ElementListable>: UIViewController, UIPageViewControllerDataSource {
     
-    var collection: Collection {
-        didSet {
-            refreshControl?.endRefreshing()
-            tableView.reloadData()
+    let collection: Collection
+    let collectionControllers: [SinglePageCollectionController<Collection.Collection>]
+    
+    init(collection: Collection) {
+        var collectionControllers = [SinglePageCollectionController<Collection.Collection>]()
+        for i in 0..<collection.numberOfPages() {
+            let subCollection = collection.collectionForPage(i)
+            collectionControllers.append(SinglePageCollectionController(collection: subCollection))
         }
-    }
-    var refreshCallback: (() -> Void)?
-    var elementTouched: ((Collection.Generator.Element) -> Void)?
-    var elementAction: ((Collection.Generator.Element, String) -> Void)?
-
-    init(collection: Collection, style: UITableViewStyle = .Plain) {
+        self.collectionControllers = collectionControllers
         self.collection = collection
-        super.init(style: style)
+        super.init(nibName: nil, bundle: nil)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.estimatedRowHeight = 90
-        tableView.tableFooterView = UIView()
-        if #available(iOS 9.0, *) {
-            tableView.cellLayoutMarginsFollowReadableWidth = false
+        let controller: UIViewController
+        if collectionControllers.count == 1 {
+            controller = collectionControllers.first!
         }
-        if refreshCallback != nil {
-            refreshControl = UIRefreshControl()
-            refreshControl?.addTarget(self, action: #selector(refresh), forControlEvents: .ValueChanged)
+        else {
+            let pageController = UIPageViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
+            pageController.dataSource = self
+            pageController.setViewControllers([collectionControllers.first!], direction: .Forward, animated: false, completion: nil)
+            controller = pageController
         }
+        controller.view.frame = view.bounds
+        view.addSubview(controller.view)
+        addChildViewController(controller)
     }
     
-    func refresh() {
-        refreshCallback?()
-    }
+    // UIPageViewControllerDataSource
     
-    // UITableViewDataSource
-    
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return collection.numberOfSections()
-    }
-
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return collection.numberOfElementsInSections(section)
-    }
-    
-    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return collection.titleForSection(section)
-    }
-    
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        guard let element = collection.elementAtIndexPath(indexPath) else {
-            return UITableViewCell()
+    func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
+        if let viewController = viewController as? SinglePageCollectionController<Collection.Collection>, index = collectionControllers.indexOf(viewController) where index > 0 {
+            return collectionControllers[index - 1]
         }
-        let cellType = element.cellType()
-        let cellId = "\(cellType)"
-        tableView.registerClass(cellType, forCellReuseIdentifier: cellId)
-        let cell = tableView.dequeueReusableCellWithIdentifier(cellId, forIndexPath: indexPath)
-        element.configureCell(cell)
-        return cell
+        return nil
     }
     
-    // UITableViewDelegate
-    
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        guard let element = collection.elementAtIndexPath(indexPath) else {
-            return
+    func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
+        if let viewController = viewController as? SinglePageCollectionController<Collection.Collection>, index = collectionControllers.indexOf(viewController) where index < collectionControllers.count - 1 {
+            return collectionControllers[index + 1]
         }
-        elementTouched?(element)
-    }
-    
-    override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
-        guard let element = collection.elementAtIndexPath(indexPath) else {
-            return []
-        }
-        var rowActions = [UITableViewRowAction]()
-        for editAction in element.editActions() {
-            let rowAction = UITableViewRowAction(style: editAction.style, title: editAction.title) {
-                [weak self] _, indexPath in
-                tableView.setEditing(false, animated: true)
-                self?.elementAction?(element, editAction.title)
-            }
-            rowActions.append(rowAction)
-        }
-        return rowActions
+        return nil
     }
     
 }
