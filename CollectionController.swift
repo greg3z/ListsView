@@ -12,12 +12,11 @@ class CollectionController<Collection: MultiTitleSectionedCollectionType where C
     
     let collectionControllers: [SinglePageCollectionController<Collection.Collection>]
     
-    init(collection: Collection, elementTouched: ((Collection.Collection.Generator.Element) -> Void)? = nil) {
+    init(collection: Collection) {
         var collectionControllers = [SinglePageCollectionController<Collection.Collection>]()
         for i in 0..<collection.numberOfPages() {
             let subCollection = collection.collectionForPage(i)
             let singlePageController = SinglePageCollectionController(collection: subCollection)
-            singlePageController.elementTouched = elementTouched
             collectionControllers.append(singlePageController)
         }
         self.collectionControllers = collectionControllers
@@ -39,6 +38,12 @@ class CollectionController<Collection: MultiTitleSectionedCollectionType where C
         controller.view.frame = view.bounds
         view.addSubview(controller.view)
         addChildViewController(controller)
+    }
+    
+    func setElementTouched(elementTouched: (Collection.Collection.Generator.Element, UITableViewCell) -> Void) {
+        for collectionController in collectionControllers {
+            collectionController.elementTouched = elementTouched
+        }
     }
     
     // UIPageViewControllerDataSource
