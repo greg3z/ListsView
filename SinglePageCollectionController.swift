@@ -17,7 +17,7 @@ class SinglePageCollectionController<Collection: TitleSectionedCollectionType wh
         }
     }
     var refreshCallback: (() -> Void)?
-    var elementTouched: ((Collection.Generator.Element) -> Void)?
+    var elementTouched: ((Collection.Generator.Element, UITableViewCell) -> Void)?
     var elementAction: ((Collection.Generator.Element, String) -> Void)?
 
     init(collection: Collection, style: UITableViewStyle = .Plain) {
@@ -71,10 +71,10 @@ class SinglePageCollectionController<Collection: TitleSectionedCollectionType wh
     // UITableViewDelegate
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        guard let element = collection.elementAtIndexPath(indexPath) else {
+        guard let element = collection.elementAtIndexPath(indexPath), cell = tableView.cellForRowAtIndexPath(indexPath) else {
             return
         }
-        elementTouched?(element)
+        elementTouched?(element, cell)
     }
     
     override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
