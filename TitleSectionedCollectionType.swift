@@ -69,7 +69,7 @@ extension Page: TitleSectionedCollectionType {
     
 }
 
-protocol MultiTitleSectionedCollectionType {
+protocol MultiTitleSectionedCollectionType: CollectionType {
     
     associatedtype Collection: TitleSectionedCollectionType
     
