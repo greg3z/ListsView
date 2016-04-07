@@ -75,6 +75,12 @@ class SinglePageCollectionController<Collection: TitleSectionedCollectionType wh
         }
         else {
             cell.selectionStyle = .None
+            if let selectedIndexPaths = tableView.indexPathsForSelectedRows where selectedIndexPaths.contains(indexPath) {
+                cell.accessoryType = .Checkmark
+            }
+            else {
+                cell.accessoryType = .None
+            }
         }
         return cell
     }
