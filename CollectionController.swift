@@ -11,6 +11,13 @@ import UIKit
 class CollectionController<Collection: MultiTitleSectionedCollectionType where Collection.Collection.Generator.Element: ElementListable>: UIViewController, UIPageViewControllerDataSource {
     
     let collectionControllers: [SinglePageCollectionController<Collection.Collection>]
+    var multiSelection = false {
+        didSet {
+            for collectionController in collectionControllers {
+                collectionController.tableView.allowsMultipleSelection = multiSelection
+            }
+        }
+    }
     
     init(collection: Collection) {
         var collectionControllers = [SinglePageCollectionController<Collection.Collection>]()
