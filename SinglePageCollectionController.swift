@@ -19,7 +19,12 @@ class SinglePageCollectionController<Collection: TitleSectionedCollectionType wh
     var refreshCallback: (() -> Void)?
     var elementTouched: ((Collection.Generator.Element, UITableViewCell) -> Void)?
     var elementAction: ((Collection.Generator.Element, String) -> Void)?
-
+    var tickStyle = TickStyle.None {
+        didSet {
+            tableView.allowsMultipleSelection = tickStyle == .Multiple
+        }
+    }
+    
     init(collection: Collection, style: UITableViewStyle = .Plain) {
         self.collection = collection
         super.init(style: style)
@@ -65,6 +70,12 @@ class SinglePageCollectionController<Collection: TitleSectionedCollectionType wh
         tableView.registerClass(cellType, forCellReuseIdentifier: cellId)
         let cell = tableView.dequeueReusableCellWithIdentifier(cellId, forIndexPath: indexPath)
         element.configureCell(cell)
+        if tickStyle == .None {
+            cell.selectionStyle = .Gray
+        }
+        else {
+            cell.selectionStyle = .None
+        }
         return cell
     }
     
@@ -73,6 +84,9 @@ class SinglePageCollectionController<Collection: TitleSectionedCollectionType wh
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         guard let element = collection.elementAtIndexPath(indexPath), cell = tableView.cellForRowAtIndexPath(indexPath) else {
             return
+        }
+        if tickStyle != .None {
+            cell.accessoryType = .Checkmark
         }
         elementTouched?(element, cell)
     }
@@ -93,4 +107,15 @@ class SinglePageCollectionController<Collection: TitleSectionedCollectionType wh
         return rowActions
     }
     
+    override func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+        guard let cell = tableView.cellForRowAtIndexPath(indexPath) else {
+            return
+        }
+        cell.accessoryType = .None
+    }
+    
+}
+
+enum TickStyle {
+    case None, Single, Multiple
 }

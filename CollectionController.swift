@@ -11,13 +11,6 @@ import UIKit
 class CollectionController<Collection: MultiTitleSectionedCollectionType where Collection.Collection.Generator.Element: ElementListable>: UIViewController, UIPageViewControllerDataSource {
     
     let collectionControllers: [SinglePageCollectionController<Collection.Collection>]
-    var multiSelection = false {
-        didSet {
-            for collectionController in collectionControllers {
-                collectionController.tableView.allowsMultipleSelection = multiSelection
-            }
-        }
-    }
     
     init(collection: Collection) {
         var collectionControllers = [SinglePageCollectionController<Collection.Collection>]()
@@ -50,6 +43,12 @@ class CollectionController<Collection: MultiTitleSectionedCollectionType where C
     func setElementTouched(elementTouched: (Collection.Collection.Generator.Element, UITableViewCell) -> Void) {
         for collectionController in collectionControllers {
             collectionController.elementTouched = elementTouched
+        }
+    }
+    
+    func setTickStyle(tickStyle: TickStyle) {
+        for collectionController in collectionControllers {
+            collectionController.tickStyle = tickStyle
         }
     }
     
