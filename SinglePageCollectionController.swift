@@ -67,7 +67,7 @@ class SinglePageCollectionController<Element: ElementListable>: UITableViewContr
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        guard let element = page.elementAtIndexPath(indexPath) else {
+        guard let element = page[indexPath] else {
             return UITableViewCell()
         }
         let cellType = element.cellType()
@@ -93,7 +93,7 @@ class SinglePageCollectionController<Element: ElementListable>: UITableViewContr
     // UITableViewDelegate
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        guard let element = page.elementAtIndexPath(indexPath), cell = tableView.cellForRowAtIndexPath(indexPath) else {
+        guard let element = page[indexPath], cell = tableView.cellForRowAtIndexPath(indexPath) else {
             return
         }
         if tickStyle != .None {
@@ -103,7 +103,7 @@ class SinglePageCollectionController<Element: ElementListable>: UITableViewContr
     }
     
     override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
-        guard let element = page.elementAtIndexPath(indexPath) else {
+        guard let element = page[indexPath] else {
             return []
         }
         var rowActions = [UITableViewRowAction]()
@@ -123,6 +123,15 @@ class SinglePageCollectionController<Element: ElementListable>: UITableViewContr
             return
         }
         cell.accessoryType = .None
+    }
+    
+}
+
+extension Page {
+    
+    subscript(indexPath: NSIndexPath) -> Element? {
+        let index = PageIndex(sectionsSize: [], currentIndex: (section: indexPath.section, element: indexPath.row))
+        return self[safe: index]
     }
     
 }
