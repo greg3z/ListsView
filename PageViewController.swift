@@ -24,11 +24,11 @@ class PageViewController<Element: ElementListable>: UITableViewController {
             tableView.allowsMultipleSelection = tickStyle == .Multiple
         }
     }
-    let selectedIndexes: [NSIndexPath]
+    let selectedElements: [Element]
     
-    init(page: Page<Element>, style: UITableViewStyle = .Plain, selectedIndexes: [NSIndexPath] = []) {
+    init(page: Page<Element>, style: UITableViewStyle = .Plain, selectedElements: [Element] = []) {
         self.page = page
-        self.selectedIndexes = selectedIndexes
+        self.selectedElements = selectedElements
         super.init(style: style)
     }
     
@@ -36,9 +36,6 @@ class PageViewController<Element: ElementListable>: UITableViewController {
         super.viewDidLoad()
         tableView.estimatedRowHeight = 90
         tableView.tableFooterView = UIView()
-        for indexPath in selectedIndexes {
-            tableView.selectRowAtIndexPath(indexPath, animated: false, scrollPosition: .None)
-        }
         if #available(iOS 9.0, *) {
             tableView.cellLayoutMarginsFollowReadableWidth = false
         }

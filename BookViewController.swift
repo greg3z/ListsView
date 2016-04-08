@@ -12,11 +12,11 @@ class BookViewController<Element: ElementListable>: UIViewController, UIPageView
     
     let pageViewControllers: [PageViewController<Element>]
     
-    init(book: Book<Element>) {
+    init(book: Book<Element>, selectedElements: [Element] = []) {
         var pageViewControllers = [PageViewController<Element>]()
         for i in 0..<book.pages.count {
             let page = book.pages[i]
-            let pageViewController = PageViewController(page: page)
+            let pageViewController = PageViewController(page: page, selectedElements: selectedElements)
             pageViewControllers.append(pageViewController)
         }
         self.pageViewControllers = pageViewControllers
