@@ -10,29 +10,29 @@ import UIKit
 
 class BookViewController<Element: ElementListable>: UIViewController, UIPageViewControllerDataSource {
     
-    let collectionControllers: [PageViewController<Element>]
+    let pageViewControllers: [PageViewController<Element>]
     
     init(book: Book<Element>) {
-        var collectionControllers = [PageViewController<Element>]()
+        var pageViewControllers = [PageViewController<Element>]()
         for i in 0..<book.pages.count {
             let page = book.pages[i]
-            let singlePageController = PageViewController(page: page)
-            collectionControllers.append(singlePageController)
+            let pageViewController = PageViewController(page: page)
+            pageViewControllers.append(pageViewController)
         }
-        self.collectionControllers = collectionControllers
+        self.pageViewControllers = pageViewControllers
         super.init(nibName: nil, bundle: nil)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         let controller: UIViewController
-        if collectionControllers.count == 1 {
-            controller = collectionControllers.first!
+        if pageViewControllers.count == 1 {
+            controller = pageViewControllers.first!
         }
         else {
             let pageController = UIPageViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
             pageController.dataSource = self
-            pageController.setViewControllers([collectionControllers.first!], direction: .Forward, animated: false, completion: nil)
+            pageController.setViewControllers([pageViewControllers.first!], direction: .Forward, animated: false, completion: nil)
             controller = pageController
         }
         controller.view.frame = view.bounds
@@ -41,29 +41,29 @@ class BookViewController<Element: ElementListable>: UIViewController, UIPageView
     }
     
     func setElementTouched(elementTouched: (Element, UITableViewCell) -> Void) {
-        for collectionController in collectionControllers {
-            collectionController.elementTouched = elementTouched
+        for pageViewController in pageViewControllers {
+            pageViewController.elementTouched = elementTouched
         }
     }
     
     func setTickStyle(tickStyle: TickStyle) {
-        for collectionController in collectionControllers {
-            collectionController.tickStyle = tickStyle
+        for pageViewController in pageViewControllers {
+            pageViewController.tickStyle = tickStyle
         }
     }
     
     // UIPageViewControllerDataSource
     
     func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
-        if let viewController = viewController as? PageViewController<Element>, index = collectionControllers.indexOf(viewController) where index > 0 {
-            return collectionControllers[index - 1]
+        if let viewController = viewController as? PageViewController<Element>, index = pageViewControllers.indexOf(viewController) where index > 0 {
+            return pageViewControllers[index - 1]
         }
         return nil
     }
     
     func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
-        if let viewController = viewController as? PageViewController<Element>, index = collectionControllers.indexOf(viewController) where index < collectionControllers.count - 1 {
-            return collectionControllers[index + 1]
+        if let viewController = viewController as? PageViewController<Element>, index = pageViewControllers.indexOf(viewController) where index < pageViewControllers.count - 1 {
+            return pageViewControllers[index + 1]
         }
         return nil
     }
