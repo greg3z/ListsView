@@ -24,9 +24,11 @@ class SinglePageCollectionController<Collection: TitleSectionedCollectionType wh
             tableView.allowsMultipleSelection = tickStyle == .Multiple
         }
     }
+    let selectedIndexes: [NSIndexPath]
     
-    init(collection: Collection, style: UITableViewStyle = .Plain) {
+    init(collection: Collection, style: UITableViewStyle = .Plain, selectedIndexes: [NSIndexPath] = []) {
         self.collection = collection
+        self.selectedIndexes = selectedIndexes
         super.init(style: style)
     }
     
@@ -34,6 +36,9 @@ class SinglePageCollectionController<Collection: TitleSectionedCollectionType wh
         super.viewDidLoad()
         tableView.estimatedRowHeight = 90
         tableView.tableFooterView = UIView()
+        for indexPath in selectedIndexes {
+            tableView.selectRowAtIndexPath(indexPath, animated: false, scrollPosition: .None)
+        }
         if #available(iOS 9.0, *) {
             tableView.cellLayoutMarginsFollowReadableWidth = false
         }
