@@ -10,13 +10,13 @@ import UIKit
 
 class CollectionController<Element: ElementListable>: UIViewController, UIPageViewControllerDataSource {
     
-    let collectionControllers: [SinglePageCollectionController<Element>]
+    let collectionControllers: [PageViewController<Element>]
     
     init(book: Book<Element>) {
-        var collectionControllers = [SinglePageCollectionController<Element>]()
+        var collectionControllers = [PageViewController<Element>]()
         for i in 0..<book.pages.count {
             let page = book.pages[i]
-            let singlePageController = SinglePageCollectionController(page: page)
+            let singlePageController = PageViewController(page: page)
             collectionControllers.append(singlePageController)
         }
         self.collectionControllers = collectionControllers
@@ -55,14 +55,14 @@ class CollectionController<Element: ElementListable>: UIViewController, UIPageVi
     // UIPageViewControllerDataSource
     
     func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
-        if let viewController = viewController as? SinglePageCollectionController<Element>, index = collectionControllers.indexOf(viewController) where index > 0 {
+        if let viewController = viewController as? PageViewController<Element>, index = collectionControllers.indexOf(viewController) where index > 0 {
             return collectionControllers[index - 1]
         }
         return nil
     }
     
     func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
-        if let viewController = viewController as? SinglePageCollectionController<Element>, index = collectionControllers.indexOf(viewController) where index < collectionControllers.count - 1 {
+        if let viewController = viewController as? PageViewController<Element>, index = collectionControllers.indexOf(viewController) where index < collectionControllers.count - 1 {
             return collectionControllers[index + 1]
         }
         return nil

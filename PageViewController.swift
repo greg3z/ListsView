@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SinglePageCollectionController<Element: ElementListable>: UITableViewController {
+class PageViewController<Element: ElementListable>: UITableViewController {
     
     var page: Page<Element> {
         didSet {
