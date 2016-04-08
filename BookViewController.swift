@@ -1,5 +1,5 @@
 //
-//  MultiCollectionController2.swift
+//  MultiBookViewController2.swift
 //  FormViewController
 //
 //  Created by Grégoire Lhotellier on 01/04/2016.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CollectionController<Element: ElementListable>: UIViewController, UIPageViewControllerDataSource {
+class BookViewController<Element: ElementListable>: UIViewController, UIPageViewControllerDataSource {
     
     let collectionControllers: [PageViewController<Element>]
     
