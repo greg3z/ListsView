@@ -12,7 +12,7 @@ class BookViewController<Element: ElementListable>: UIViewController, UIPageView
     
     let pageViewControllers: [PageViewController<Element>]
     
-    init(book: Book<Element>, selectedElements: [Element] = []) {
+    init(book: Book<Element>, selectedElements: Set<Element> = []) {
         var pageViewControllers = [PageViewController<Element>]()
         for i in 0..<book.pages.count {
             let page = book.pages[i]
@@ -66,6 +66,18 @@ class BookViewController<Element: ElementListable>: UIViewController, UIPageView
             return pageViewControllers[index + 1]
         }
         return nil
+    }
+    
+}
+
+extension CollectionType where Generator.Element: Hashable {
+    
+    func toSet() -> Set<Generator.Element> {
+        var set = Set<Generator.Element>()
+        for element in self {
+            set.insert(element)
+        }
+        return set
     }
     
 }

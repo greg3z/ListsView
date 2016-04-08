@@ -24,9 +24,9 @@ class PageViewController<Element: ElementListable>: UITableViewController {
             tableView.allowsMultipleSelection = tickStyle == .Multiple
         }
     }
-    let selectedElements: [Element]
+    let selectedElements: Set<Element>
     
-    init(page: Page<Element>, style: UITableViewStyle = .Plain, selectedElements: [Element] = []) {
+    init(page: Page<Element>, style: UITableViewStyle = .Plain, selectedElements: Set<Element> = []) {
         self.page = page
         self.selectedElements = selectedElements
         super.init(style: style)
@@ -135,4 +135,21 @@ extension Page {
 
 enum TickStyle {
     case None, Single, Multiple
+}
+
+extension CollectionType where Generator.Element: Equatable {
+    
+    func indexesOf(searchedElement: Generator.Element) -> [Index] {
+        var indexes = [Index]()
+        var index = startIndex
+        while index != endIndex {
+            let element = self[index]
+            if element == searchedElement {
+                indexes.append(index)
+            }
+            index = index.successor()
+        }
+        return indexes
+    }
+    
 }

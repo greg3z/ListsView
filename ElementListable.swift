@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-protocol ElementListable {
+protocol ElementListable: Hashable {
     
     func cellType() -> UITableViewCell.Type
     func configureCell(cell: UITableViewCell)
