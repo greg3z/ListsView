@@ -8,15 +8,15 @@
 
 import UIKit
 
-class CollectionController<Collection: MultiTitleSectionedCollectionType where Collection.Collection.Generator.Element: ElementListable>: UIViewController, UIPageViewControllerDataSource {
+class CollectionController<Element: ElementListable>: UIViewController, UIPageViewControllerDataSource {
     
-    let collectionControllers: [SinglePageCollectionController<Collection.Collection>]
+    let collectionControllers: [SinglePageCollectionController<Element>]
     
-    init(collection: Collection) {
-        var collectionControllers = [SinglePageCollectionController<Collection.Collection>]()
-        for i in 0..<collection.numberOfPages() {
-            let subCollection = collection.collectionForPage(i)
-            let singlePageController = SinglePageCollectionController(collection: subCollection)
+    init(book: Book<Element>) {
+        var collectionControllers = [SinglePageCollectionController<Element>]()
+        for i in 0..<book.pages.count {
+            let page = book.pages[i]
+            let singlePageController = SinglePageCollectionController(page: page)
             collectionControllers.append(singlePageController)
         }
         self.collectionControllers = collectionControllers
@@ -40,7 +40,7 @@ class CollectionController<Collection: MultiTitleSectionedCollectionType where C
         addChildViewController(controller)
     }
     
-    func setElementTouched(elementTouched: (Collection.Collection.Generator.Element, UITableViewCell) -> Void) {
+    func setElementTouched(elementTouched: (Element, UITableViewCell) -> Void) {
         for collectionController in collectionControllers {
             collectionController.elementTouched = elementTouched
         }
@@ -55,14 +55,14 @@ class CollectionController<Collection: MultiTitleSectionedCollectionType where C
     // UIPageViewControllerDataSource
     
     func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
-        if let viewController = viewController as? SinglePageCollectionController<Collection.Collection>, index = collectionControllers.indexOf(viewController) where index > 0 {
+        if let viewController = viewController as? SinglePageCollectionController<Element>, index = collectionControllers.indexOf(viewController) where index > 0 {
             return collectionControllers[index - 1]
         }
         return nil
     }
     
     func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
-        if let viewController = viewController as? SinglePageCollectionController<Collection.Collection>, index = collectionControllers.indexOf(viewController) where index < collectionControllers.count - 1 {
+        if let viewController = viewController as? SinglePageCollectionController<Element>, index = collectionControllers.indexOf(viewController) where index < collectionControllers.count - 1 {
             return collectionControllers[index + 1]
         }
         return nil

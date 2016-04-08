@@ -8,17 +8,17 @@
 
 import UIKit
 
-class SinglePageCollectionController<Collection: TitleSectionedCollectionType where Collection.Generator.Element: ElementListable>: UITableViewController {
+class SinglePageCollectionController<Element: ElementListable>: UITableViewController {
     
-    var collection: Collection {
+    var page: Page<Element> {
         didSet {
             refreshControl?.endRefreshing()
             tableView.reloadData()
         }
     }
     var refreshCallback: (() -> Void)?
-    var elementTouched: ((Collection.Generator.Element, UITableViewCell) -> Void)?
-    var elementAction: ((Collection.Generator.Element, String) -> Void)?
+    var elementTouched: ((Element, UITableViewCell) -> Void)?
+    var elementAction: ((Element, String) -> Void)?
     var tickStyle = TickStyle.None {
         didSet {
             tableView.allowsMultipleSelection = tickStyle == .Multiple
@@ -26,8 +26,8 @@ class SinglePageCollectionController<Collection: TitleSectionedCollectionType wh
     }
     let selectedIndexes: [NSIndexPath]
     
-    init(collection: Collection, style: UITableViewStyle = .Plain, selectedIndexes: [NSIndexPath] = []) {
-        self.collection = collection
+    init(page: Page<Element>, style: UITableViewStyle = .Plain, selectedIndexes: [NSIndexPath] = []) {
+        self.page = page
         self.selectedIndexes = selectedIndexes
         super.init(style: style)
     }
@@ -55,19 +55,19 @@ class SinglePageCollectionController<Collection: TitleSectionedCollectionType wh
     // UITableViewDataSource
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return collection.numberOfSections()
+        return page.sections.count
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return collection.numberOfElementsInSections(section)
+        return page.sections[section].count
     }
     
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return collection.titleForSection(section)
+        return page.sections[section].title
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        guard let element = collection.elementAtIndexPath(indexPath) else {
+        guard let element = page.elementAtIndexPath(indexPath) else {
             return UITableViewCell()
         }
         let cellType = element.cellType()
@@ -93,7 +93,7 @@ class SinglePageCollectionController<Collection: TitleSectionedCollectionType wh
     // UITableViewDelegate
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        guard let element = collection.elementAtIndexPath(indexPath), cell = tableView.cellForRowAtIndexPath(indexPath) else {
+        guard let element = page.elementAtIndexPath(indexPath), cell = tableView.cellForRowAtIndexPath(indexPath) else {
             return
         }
         if tickStyle != .None {
@@ -103,7 +103,7 @@ class SinglePageCollectionController<Collection: TitleSectionedCollectionType wh
     }
     
     override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
-        guard let element = collection.elementAtIndexPath(indexPath) else {
+        guard let element = page.elementAtIndexPath(indexPath) else {
             return []
         }
         var rowActions = [UITableViewRowAction]()
