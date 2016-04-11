@@ -11,6 +11,13 @@ import UIKit
 class BookViewController<Element: ElementListable>: UIViewController, UIPageViewControllerDataSource {
     
     let pageViewControllers: [PageViewController<Element>]
+    var context: CellTypeContext? = nil {
+        didSet {
+            for pageViewController in pageViewControllers {
+                pageViewController.context = context
+            }
+        }
+    }
     
     init(book: Book<Element>, selectedElements: Set<Element> = []) {
         var pageViewControllers = [PageViewController<Element>]()

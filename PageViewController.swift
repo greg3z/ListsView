@@ -25,6 +25,7 @@ class PageViewController<Element: ElementListable>: UITableViewController {
         }
     }
     let selectedElements: Set<Element>
+    var context: CellTypeContext? = nil
     
     init(page: Page<Element>, style: UITableViewStyle = .Plain, selectedElements: Set<Element> = []) {
         self.page = page
@@ -67,11 +68,10 @@ class PageViewController<Element: ElementListable>: UITableViewController {
         guard let element = page[indexPath] else {
             return UITableViewCell()
         }
-        let cellType = element.cellType()
+        let cellType = element.cellType(context)
         let cellId = "\(cellType)"
         tableView.registerClass(cellType, forCellReuseIdentifier: cellId)
         let cell = tableView.dequeueReusableCellWithIdentifier(cellId, forIndexPath: indexPath)
-        element.configureCell(cell)
         if tickStyle == .None {
             cell.selectionStyle = .Gray
         }
@@ -84,6 +84,7 @@ class PageViewController<Element: ElementListable>: UITableViewController {
                 cell.accessoryType = .None
             }
         }
+        element.configureCell(cell)
         return cell
     }
     

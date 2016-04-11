@@ -11,7 +11,7 @@ import UIKit
 
 protocol ElementListable: Hashable {
     
-    func cellType() -> UITableViewCell.Type
+    func cellType(context: CellTypeContext?) -> UITableViewCell.Type
     func configureCell(cell: UITableViewCell)
     func editActions() -> [EditAction]
     
@@ -19,13 +19,17 @@ protocol ElementListable: Hashable {
 
 extension ElementListable {
     
-    func cellType() -> UITableViewCell.Type {
+    func cellType(context: CellTypeContext?) -> UITableViewCell.Type {
         return UITableViewCell.self
     }
     
     func editActions() -> [EditAction] {
         return []
     }
+    
+}
+
+protocol CellTypeContext {
     
 }
 
