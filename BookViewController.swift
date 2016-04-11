@@ -59,6 +59,12 @@ class BookViewController<Element: ElementListable>: UIViewController, UIPageView
         }
     }
     
+    func reloadData() {
+        for pageViewController in pageViewControllers {
+            pageViewController.tableView.reloadData()
+        }
+    }
+    
     // UIPageViewControllerDataSource
     
     func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
