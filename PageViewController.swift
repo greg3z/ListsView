@@ -84,7 +84,7 @@ class PageViewController<Element: ElementListable>: UITableViewController {
                 cell.accessoryType = .None
             }
         }
-        element.configureCell(cell)
+        element.configureCell(cell, context: context)
         return cell
     }
     
