@@ -151,6 +151,10 @@ extension PageIndex {
         return NSIndexPath(forRow: currentIndex.element, inSection: currentIndex.section)
     }
     
+    init(indexPath: NSIndexPath) {
+        self.init(sectionsSize: [], currentIndex: (section: indexPath.section, element: indexPath.row))
+    }
+    
 }
 
 enum TickStyle {

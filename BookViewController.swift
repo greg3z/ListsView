@@ -18,6 +18,7 @@ class BookViewController<Element: ElementListable>: UIViewController, UIPageView
             }
         }
     }
+    var selectedElementsCallback: (Set<Element> -> Void)?
     
     init(book: Book<Element>, selectedElements: Set<Element> = []) {
         var pageViewControllers = [PageViewController<Element>]()
@@ -45,6 +46,20 @@ class BookViewController<Element: ElementListable>: UIViewController, UIPageView
         controller.view.frame = view.bounds
         view.addSubview(controller.view)
         addChildViewController(controller)
+    }
+    
+    func getSelectedElements() {
+        var selectedElements = Set<Element>()
+        for pageViewController in pageViewControllers {
+            guard let selectedIndexes = pageViewController.tableView.indexPathsForSelectedRows else {
+                continue
+            }
+            for selectedIndex in selectedIndexes {
+                let element = pageViewController.page[PageIndex(indexPath: selectedIndex)]
+                selectedElements.insert(element)
+            }
+        }
+        selectedElementsCallback?(selectedElements)
     }
     
     func setElementTouched(elementTouched: (Element, UITableViewCell) -> Void) {
