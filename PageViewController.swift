@@ -24,7 +24,7 @@ class PageViewController<Element: ElementListable>: UITableViewController {
             tableView.allowsMultipleSelection = tickStyle == .Multiple
         }
     }
-    let selectedElements: Set<Element>
+    var selectedElements: Set<Element>
     var context: CellTypeContext? = nil
     
     init(page: Page<Element>, style: UITableViewStyle = .Plain, selectedElements: Set<Element> = []) {
@@ -44,6 +44,17 @@ class PageViewController<Element: ElementListable>: UITableViewController {
             refreshControl = UIRefreshControl()
             refreshControl?.addTarget(self, action: #selector(refresh), forControlEvents: .ValueChanged)
         }
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        for selectedElement in selectedElements {
+            let indexes = page.indexesOf(selectedElement)
+            for index in indexes {
+                tableView.selectRowAtIndexPath(index.indexPath, animated: false, scrollPosition: .None)
+            }
+        }
+        selectedElements.removeAll()
     }
     
     func refresh() {
@@ -130,6 +141,14 @@ extension Page {
     subscript(indexPath: NSIndexPath) -> Element? {
         let index = PageIndex(sectionsSize: [], currentIndex: (section: indexPath.section, element: indexPath.row))
         return self[safe: index]
+    }
+    
+}
+
+extension PageIndex {
+    
+    var indexPath: NSIndexPath {
+        return NSIndexPath(forRow: currentIndex.element, inSection: currentIndex.section)
     }
     
 }
