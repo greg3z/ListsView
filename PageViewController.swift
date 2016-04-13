@@ -23,11 +23,7 @@ class PageViewController<Element: ElementListable>: UITableViewController {
     }
     var elementTouched: ((Element, UITableViewCell) -> Void)?
     var elementAction: ((Element, String) -> Void)?
-    var tickStyle = TickStyle.None {
-        didSet {
-            tableView.allowsMultipleSelection = tickStyle == .Multiple
-        }
-    }
+    var tickStyle = TickStyle.None
     var selectedElements: Set<Element>
     var context: CellTypeContext? = nil
     
@@ -45,17 +41,6 @@ class PageViewController<Element: ElementListable>: UITableViewController {
             tableView.cellLayoutMarginsFollowReadableWidth = false
         }
         setRefreshControl()
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        for selectedElement in selectedElements {
-            let indexes = page.indexesOf(selectedElement)
-            for index in indexes {
-                tableView.selectRowAtIndexPath(index.indexPath, animated: false, scrollPosition: .None)
-            }
-        }
-        selectedElements.removeAll()
     }
     
     func setRefreshControl() {
@@ -96,12 +81,7 @@ class PageViewController<Element: ElementListable>: UITableViewController {
         }
         else {
             cell.selectionStyle = .None
-            if let selectedIndexPaths = tableView.indexPathsForSelectedRows where selectedIndexPaths.contains(indexPath) {
-                cell.accessoryType = .Checkmark
-            }
-            else {
-                cell.accessoryType = .None
-            }
+            cell.accessoryType = selectedElements.contains(element) ? .Checkmark : .None
         }
         element.configureCell(cell, context: context)
         return cell
@@ -114,7 +94,19 @@ class PageViewController<Element: ElementListable>: UITableViewController {
             return
         }
         if tickStyle != .None {
-            cell.accessoryType = .Checkmark
+            if selectedElements.contains(element) {
+                selectedElements.remove(element)
+            }
+            else {
+                if tickStyle == .Single {
+                    selectedElements.removeAll()
+                }
+                selectedElements.insert(element)
+            }
+            for cell in tableView.visibleCells {
+                guard let indexPath = tableView.indexPathForCell(cell), element = page[indexPath] else { continue }
+                cell.accessoryType = selectedElements.contains(element) ? .Checkmark : .None
+            }
         }
         elementTouched?(element, cell)
     }
@@ -133,13 +125,6 @@ class PageViewController<Element: ElementListable>: UITableViewController {
             rowActions.append(rowAction)
         }
         return rowActions
-    }
-    
-    override func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
-        guard let cell = tableView.cellForRowAtIndexPath(indexPath) else {
-            return
-        }
-        cell.accessoryType = .None
     }
     
 }

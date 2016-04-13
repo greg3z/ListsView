@@ -64,32 +64,3 @@ extension PageIndex {
 enum TickStyle {
     case None, Single, Multiple
 }
-
-extension CollectionType where Generator.Element: Equatable {
-    
-    func indexesOf(searchedElement: Generator.Element) -> [Index] {
-        var indexes = [Index]()
-        var index = startIndex
-        while index != endIndex {
-            let element = self[index]
-            if element == searchedElement {
-                indexes.append(index)
-            }
-            index = index.successor()
-        }
-        return indexes
-    }
-    
-}
-
-extension CollectionType where Generator.Element: Hashable {
-    
-    func toSet() -> Set<Generator.Element> {
-        var set = Set<Generator.Element>()
-        for element in self {
-            set.insert(element)
-        }
-        return set
-    }
-    
-}
