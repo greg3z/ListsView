@@ -110,15 +110,3 @@ class BookViewController<Element: ElementListable>: UIViewController, UIPageView
     }
     
 }
-
-extension CollectionType where Generator.Element: Hashable {
-    
-    func toSet() -> Set<Generator.Element> {
-        var set = Set<Generator.Element>()
-        for element in self {
-            set.insert(element)
-        }
-        return set
-    }
-    
-}
