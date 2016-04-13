@@ -16,7 +16,11 @@ class PageViewController<Element: ElementListable>: UITableViewController {
             tableView.reloadData()
         }
     }
-    var refreshCallback: (() -> Void)?
+    var refreshCallback: (Void -> Void)? {
+        didSet {
+            setRefreshControl()
+        }
+    }
     var elementTouched: ((Element, UITableViewCell) -> Void)?
     var elementAction: ((Element, String) -> Void)?
     var tickStyle = TickStyle.None {
@@ -40,10 +44,7 @@ class PageViewController<Element: ElementListable>: UITableViewController {
         if #available(iOS 9.0, *) {
             tableView.cellLayoutMarginsFollowReadableWidth = false
         }
-        if refreshCallback != nil {
-            refreshControl = UIRefreshControl()
-            refreshControl?.addTarget(self, action: #selector(refresh), forControlEvents: .ValueChanged)
-        }
+        setRefreshControl()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -55,6 +56,13 @@ class PageViewController<Element: ElementListable>: UITableViewController {
             }
         }
         selectedElements.removeAll()
+    }
+    
+    func setRefreshControl() {
+        if isViewLoaded() && refreshCallback != nil {
+            refreshControl = UIRefreshControl()
+            refreshControl?.addTarget(self, action: #selector(refresh), forControlEvents: .ValueChanged)
+        }
     }
     
     func refresh() {
@@ -132,48 +140,6 @@ class PageViewController<Element: ElementListable>: UITableViewController {
             return
         }
         cell.accessoryType = .None
-    }
-    
-}
-
-extension Page {
-    
-    subscript(indexPath: NSIndexPath) -> Element? {
-        let index = PageIndex(sectionsSize: [], currentIndex: (section: indexPath.section, element: indexPath.row))
-        return self[safe: index]
-    }
-    
-}
-
-extension PageIndex {
-    
-    var indexPath: NSIndexPath {
-        return NSIndexPath(forRow: currentIndex.element, inSection: currentIndex.section)
-    }
-    
-    init(indexPath: NSIndexPath) {
-        self.init(sectionsSize: [], currentIndex: (section: indexPath.section, element: indexPath.row))
-    }
-    
-}
-
-enum TickStyle {
-    case None, Single, Multiple
-}
-
-extension CollectionType where Generator.Element: Equatable {
-    
-    func indexesOf(searchedElement: Generator.Element) -> [Index] {
-        var indexes = [Index]()
-        var index = startIndex
-        while index != endIndex {
-            let element = self[index]
-            if element == searchedElement {
-                indexes.append(index)
-            }
-            index = index.successor()
-        }
-        return indexes
     }
     
 }

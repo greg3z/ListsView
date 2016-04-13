@@ -19,6 +19,13 @@ class BookViewController<Element: ElementListable>: UIViewController, UIPageView
         }
     }
     var selectedElementsCallback: (Set<Element> -> Void)?
+    var refreshCallback: (Void -> Void)? {
+        didSet {
+            for pageViewController in pageViewControllers {
+                pageViewController.refreshCallback = refreshCallback
+            }
+        }
+    }
     
     init(book: Book<Element>, selectedElements: Set<Element> = []) {
         var pageViewControllers = [PageViewController<Element>]()
