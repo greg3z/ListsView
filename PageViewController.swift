@@ -24,7 +24,11 @@ class PageViewController<Element: ElementListable>: UITableViewController {
     var elementTouched: ((Element, UITableViewCell) -> Void)?
     var elementAction: ((Element, String) -> Void)?
     var tickStyle = TickStyle.None
-    var selectedElements: Set<Element>
+    var selectedElements: Set<Element> {
+        didSet {
+            updateVisibleSelectedCells()
+        }
+    }
     var context: CellTypeContext? = nil
     
     init(page: Page<Element>, style: UITableViewStyle = .Plain, selectedElements: Set<Element> = []) {
@@ -52,6 +56,14 @@ class PageViewController<Element: ElementListable>: UITableViewController {
     
     func refresh() {
         refreshCallback?()
+    }
+    
+    func updateVisibleSelectedCells() {
+        guard isViewLoaded() else { return }
+        for cell in tableView.visibleCells {
+            guard let indexPath = tableView.indexPathForCell(cell), element = page[indexPath] else { continue }
+            cell.accessoryType = selectedElements.contains(element) ? .Checkmark : .None
+        }
     }
     
     // UITableViewDataSource
@@ -103,10 +115,7 @@ class PageViewController<Element: ElementListable>: UITableViewController {
                 }
                 selectedElements.insert(element)
             }
-            for cell in tableView.visibleCells {
-                guard let indexPath = tableView.indexPathForCell(cell), element = page[indexPath] else { continue }
-                cell.accessoryType = selectedElements.contains(element) ? .Checkmark : .None
-            }
+            updateVisibleSelectedCells()
         }
         elementTouched?(element, cell)
     }

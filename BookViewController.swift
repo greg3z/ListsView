@@ -26,6 +26,7 @@ class BookViewController<Element: ElementListable>: UIViewController, UIPageView
             }
         }
     }
+    var elementTouched: ((Element, UITableViewCell) -> Void)?
     
     init(book: Book<Element>, selectedElements: Set<Element> = []) {
         var pageViewControllers = [PageViewController<Element>]()
@@ -53,6 +54,16 @@ class BookViewController<Element: ElementListable>: UIViewController, UIPageView
         controller.view.frame = view.bounds
         view.addSubview(controller.view)
         addChildViewController(controller)
+        for pageViewController in pageViewControllers {
+            pageViewController.elementTouched = {
+                [weak self] element, cell in
+                let selectedElements = pageViewController.selectedElements
+                for otherPageViewController in self?.pageViewControllers ?? [] where otherPageViewController != pageViewController {
+                    otherPageViewController.selectedElements = selectedElements
+                }
+                self?.elementTouched?(element, cell)
+            }
+        }
     }
     
     func getSelectedElements() {
@@ -67,12 +78,6 @@ class BookViewController<Element: ElementListable>: UIViewController, UIPageView
             }
         }
         selectedElementsCallback?(selectedElements)
-    }
-    
-    func setElementTouched(elementTouched: (Element, UITableViewCell) -> Void) {
-        for pageViewController in pageViewControllers {
-            pageViewController.elementTouched = elementTouched
-        }
     }
     
     func setTickStyle(tickStyle: TickStyle) {
