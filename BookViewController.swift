@@ -87,6 +87,12 @@ class BookViewController<Element: ElementListable>: UIViewController, UIPageView
         }
     }
     
+    func endRefreshing() {
+        for pageViewController in pageViewControllers {
+            pageViewController.refreshControl?.endRefreshing()
+        }
+    }
+    
     // UIPageViewControllerDataSource
     
     func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
