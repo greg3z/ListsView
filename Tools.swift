@@ -12,7 +12,7 @@ import UIKit
 protocol ElementListable: Hashable {
     
     func cellType(context: CellTypeContext?) -> UITableViewCell.Type
-    func configureCell(cell: UITableViewCell, context: CellTypeContext?)
+    func configureCell(cell: UITableViewCell, tableView: UITableView, indexPath: NSIndexPath, context: CellTypeContext?)
     func editActions() -> [EditAction]
     
 }

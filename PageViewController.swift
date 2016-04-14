@@ -96,7 +96,7 @@ class PageViewController<Element: ElementListable>: UITableViewController {
             cell.selectionStyle = .None
             cell.accessoryType = selectedElements.contains(element) ? .Checkmark : .None
         }
-        element.configureCell(cell, context: context)
+        element.configureCell(cell, tableView: tableView, indexPath: indexPath, context: context)
         return cell
     }
     
