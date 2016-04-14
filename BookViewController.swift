@@ -28,11 +28,11 @@ class BookViewController<Element: ElementListable>: UIViewController, UIPageView
     }
     var elementTouched: ((Element, UITableViewCell) -> Void)?
     
-    init(book: Book<Element>, selectedElements: Set<Element> = []) {
+    init(book: Book<Element>, selectedElements: Set<Element> = [], tickStyle: TickStyle = .None) {
         var pageViewControllers = [PageViewController<Element>]()
         for i in 0..<book.pages.count {
             let page = book.pages[i]
-            let pageViewController = PageViewController(page: page, selectedElements: selectedElements)
+            let pageViewController = PageViewController(page: page, selectedElements: selectedElements, tickStyle: tickStyle)
             pageViewControllers.append(pageViewController)
         }
         self.pageViewControllers = pageViewControllers
@@ -78,12 +78,6 @@ class BookViewController<Element: ElementListable>: UIViewController, UIPageView
             }
         }
         selectedElementsCallback?(selectedElements)
-    }
-    
-    func setTickStyle(tickStyle: TickStyle) {
-        for pageViewController in pageViewControllers {
-            pageViewController.tickStyle = tickStyle
-        }
     }
     
     func reloadData() {

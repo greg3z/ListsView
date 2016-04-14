@@ -23,7 +23,7 @@ class PageViewController<Element: ElementListable>: UITableViewController {
     }
     var elementTouched: ((Element, UITableViewCell) -> Void)?
     var elementAction: ((Element, String) -> Void)?
-    var tickStyle = TickStyle.None
+    let tickStyle: TickStyle
     var selectedElements: Set<Element> {
         didSet {
             updateVisibleSelectedCells()
@@ -31,9 +31,10 @@ class PageViewController<Element: ElementListable>: UITableViewController {
     }
     var context: CellTypeContext? = nil
     
-    init(page: Page<Element>, style: UITableViewStyle = .Plain, selectedElements: Set<Element> = []) {
+    init(page: Page<Element>, style: UITableViewStyle = .Plain, selectedElements: Set<Element> = [], tickStyle: TickStyle = .None) {
         self.page = page
         self.selectedElements = selectedElements
+        self.tickStyle = tickStyle
         super.init(style: style)
     }
     
