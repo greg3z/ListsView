@@ -18,7 +18,6 @@ class BookViewController<Element: ElementListable>: UIViewController, UIPageView
             }
         }
     }
-    var selectedElementsCallback: (Set<Element> -> Void)?
     var refreshCallback: (Void -> Void)? {
         didSet {
             for pageViewController in pageViewControllers {
@@ -27,8 +26,10 @@ class BookViewController<Element: ElementListable>: UIViewController, UIPageView
         }
     }
     var elementTouched: ((Element, UITableViewCell) -> Void)?
+    var selectedElements: Set<Element>
     
     init(book: Book<Element>, selectedElements: Set<Element> = [], tickStyle: TickStyle = .None) {
+        self.selectedElements = selectedElements
         var pageViewControllers = [PageViewController<Element>]()
         for i in 0..<book.pages.count {
             let page = book.pages[i]
@@ -57,27 +58,13 @@ class BookViewController<Element: ElementListable>: UIViewController, UIPageView
         for pageViewController in pageViewControllers {
             pageViewController.elementTouched = {
                 [weak self] element, cell in
-                let selectedElements = pageViewController.selectedElements
+                self?.selectedElements = pageViewController.selectedElements
                 for otherPageViewController in self?.pageViewControllers ?? [] where otherPageViewController != pageViewController {
-                    otherPageViewController.selectedElements = selectedElements
+                    otherPageViewController.selectedElements = self!.selectedElements
                 }
                 self?.elementTouched?(element, cell)
             }
         }
-    }
-    
-    func getSelectedElements() {
-        var selectedElements = Set<Element>()
-        for pageViewController in pageViewControllers {
-            guard let selectedIndexes = pageViewController.tableView.indexPathsForSelectedRows else {
-                continue
-            }
-            for selectedIndex in selectedIndexes {
-                let element = pageViewController.page[PageIndex(indexPath: selectedIndex)]
-                selectedElements.insert(element)
-            }
-        }
-        selectedElementsCallback?(selectedElements)
     }
     
     func reloadData() {
