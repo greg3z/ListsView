@@ -8,19 +8,21 @@
 
 import UIKit
 
-class BookViewController<Element: ElementListable>: UIViewController, UIPageViewControllerDataSource {
+class BookViewController<Element: ElementListable>: MultiPageViewController {
     
-    let pageViewControllers: [PageViewController<Element>]
+    var bookPageViewControllers: [PageViewController<Element>] {
+        return pageViewControllers as! [PageViewController]
+    }
     var context: CellTypeContext? = nil {
         didSet {
-            for pageViewController in pageViewControllers {
+            for pageViewController in bookPageViewControllers {
                 pageViewController.context = context
             }
         }
     }
     var refreshCallback: (Void -> Void)? {
         didSet {
-            for pageViewController in pageViewControllers {
+            for pageViewController in bookPageViewControllers {
                 pageViewController.refreshCallback = refreshCallback
             }
         }
@@ -36,30 +38,16 @@ class BookViewController<Element: ElementListable>: UIViewController, UIPageView
             let pageViewController = PageViewController(page: page, selectedElements: selectedElements, tickStyle: tickStyle)
             pageViewControllers.append(pageViewController)
         }
-        self.pageViewControllers = pageViewControllers
-        super.init(nibName: nil, bundle: nil)
+        super.init(pageViewControllers: pageViewControllers)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let controller: UIViewController
-        if pageViewControllers.count == 1 {
-            controller = pageViewControllers.first!
-        }
-        else {
-            let pageController = UIPageViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
-            pageController.dataSource = self
-            pageController.setViewControllers([pageViewControllers.first!], direction: .Forward, animated: false, completion: nil)
-            controller = pageController
-        }
-        controller.view.frame = view.bounds
-        view.addSubview(controller.view)
-        addChildViewController(controller)
-        for pageViewController in pageViewControllers {
+        for pageViewController in bookPageViewControllers {
             pageViewController.elementTouched = {
                 [weak self] element, cell in
                 self?.selectedElements = pageViewController.selectedElements
-                for otherPageViewController in self?.pageViewControllers ?? [] where otherPageViewController != pageViewController {
+                for otherPageViewController in self?.bookPageViewControllers ?? [] where otherPageViewController != pageViewController {
                     otherPageViewController.selectedElements = self!.selectedElements
                 }
                 self?.elementTouched?(element, cell)
@@ -68,31 +56,15 @@ class BookViewController<Element: ElementListable>: UIViewController, UIPageView
     }
     
     func reloadData() {
-        for pageViewController in pageViewControllers {
+        for pageViewController in bookPageViewControllers {
             pageViewController.tableView.reloadData()
         }
     }
     
     func endRefreshing() {
-        for pageViewController in pageViewControllers {
+        for pageViewController in bookPageViewControllers {
             pageViewController.refreshControl?.endRefreshing()
         }
-    }
-    
-    // UIPageViewControllerDataSource
-    
-    func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
-        if let viewController = viewController as? PageViewController<Element>, index = pageViewControllers.indexOf(viewController) where index > 0 {
-            return pageViewControllers[index - 1]
-        }
-        return nil
-    }
-    
-    func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
-        if let viewController = viewController as? PageViewController<Element>, index = pageViewControllers.indexOf(viewController) where index < pageViewControllers.count - 1 {
-            return pageViewControllers[index + 1]
-        }
-        return nil
     }
     
 }
