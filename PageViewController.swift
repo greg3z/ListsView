@@ -23,18 +23,10 @@ class PageViewController<Element: ElementListable>: UITableViewController {
     }
     var elementTouched: ((Element, UITableViewCell) -> Void)?
     var elementAction: ((Element, String) -> Void)?
-    let tickStyle: TickStyle
-    var selectedElements: Set<Element> {
-        didSet {
-            updateVisibleSelectedCells()
-        }
-    }
     var context: CellTypeContext? = nil
     
-    init(page: Page<Element>, style: UITableViewStyle = .Plain, selectedElements: Set<Element> = [], tickStyle: TickStyle = .None) {
+    init(page: Page<Element>, style: UITableViewStyle = .Plain) {
         self.page = page
-        self.selectedElements = selectedElements
-        self.tickStyle = tickStyle
         super.init(style: style)
     }
     
@@ -59,14 +51,6 @@ class PageViewController<Element: ElementListable>: UITableViewController {
         refreshCallback?()
     }
     
-    func updateVisibleSelectedCells() {
-        guard isViewLoaded() else { return }
-        for cell in tableView.visibleCells {
-            guard let indexPath = tableView.indexPathForCell(cell), element = page[indexPath] else { continue }
-            cell.accessoryType = selectedElements.contains(element) ? .Checkmark : .None
-        }
-    }
-    
     // UITableViewDataSource
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -89,13 +73,6 @@ class PageViewController<Element: ElementListable>: UITableViewController {
         let cellId = "\(cellType)"
         tableView.registerClass(cellType, forCellReuseIdentifier: cellId)
         let cell = tableView.dequeueReusableCellWithIdentifier(cellId, forIndexPath: indexPath)
-        if tickStyle == .None {
-            cell.selectionStyle = .Gray
-        }
-        else {
-            cell.selectionStyle = .None
-            cell.accessoryType = selectedElements.contains(element) ? .Checkmark : .None
-        }
         element.configureCell(cell, tableView: tableView, indexPath: indexPath, context: context)
         return cell
     }
@@ -105,18 +82,6 @@ class PageViewController<Element: ElementListable>: UITableViewController {
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         guard let element = page[indexPath], cell = tableView.cellForRowAtIndexPath(indexPath) else {
             return
-        }
-        if tickStyle != .None {
-            if selectedElements.contains(element) {
-                selectedElements.remove(element)
-            }
-            else {
-                if tickStyle == .Single {
-                    selectedElements.removeAll()
-                }
-                selectedElements.insert(element)
-            }
-            updateVisibleSelectedCells()
         }
         elementTouched?(element, cell)
     }
