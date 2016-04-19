@@ -21,11 +21,18 @@ class BookViewController<Element>: MultiPageViewController {
         }
     }
     var elementTouched: ((Element, UITableViewCell) -> Void)?
+    var configureCell: ((Element, cell: UITableViewCell, tableView: UITableView, indexPath: NSIndexPath) -> Void)? {
+        didSet {
+            for pageViewController in bookPageViewControllers {
+                pageViewController.configureCell = configureCell
+            }
+        }
+    }
     
-    init(book: Book<Element>, cellTypeForElement: Element -> UITableViewCell.Type, configureCell: (Element, cell: UITableViewCell, tableView: UITableView, indexPath: NSIndexPath) -> Void) {
+    init(book: Book<Element>, cellTypeForElement: Element -> UITableViewCell.Type) {
         var pageViewControllers = [PageViewController<Element>]()
         for page in book.pages {
-            let pageViewController = PageViewController(page: page, cellTypeForElement: cellTypeForElement, configureCell: configureCell)
+            let pageViewController = PageViewController(page: page, cellTypeForElement: cellTypeForElement)
             pageViewControllers.append(pageViewController)
         }
         super.init(pageViewControllers: pageViewControllers)
