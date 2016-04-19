@@ -8,7 +8,7 @@
 
 import UIKit
 
-class PageViewController<Element: ElementListable>: UITableViewController {
+class PageViewController<Element>: UITableViewController {
     
     var page: Page<Element> {
         didSet {
@@ -22,10 +22,15 @@ class PageViewController<Element: ElementListable>: UITableViewController {
         }
     }
     var elementTouched: ((Element, UITableViewCell) -> Void)?
+    var editActions: (Element -> [EditAction])?
     var elementAction: ((Element, String) -> Void)?
+    var configureCell: (Element, cell: UITableViewCell, tableView: UITableView, indexPath: NSIndexPath) -> Void
+    let cellTypeForElement: Element -> UITableViewCell.Type
     
-    init(page: Page<Element>, style: UITableViewStyle = .Plain) {
+    init(page: Page<Element>, style: UITableViewStyle = .Plain, cellTypeForElement: Element -> UITableViewCell.Type, configureCell: (Element, cell: UITableViewCell, tableView: UITableView, indexPath: NSIndexPath) -> Void) {
         self.page = page
+        self.cellTypeForElement = cellTypeForElement
+        self.configureCell = configureCell
         super.init(style: style)
     }
     
@@ -68,11 +73,11 @@ class PageViewController<Element: ElementListable>: UITableViewController {
         guard let element = page[indexPath] else {
             return UITableViewCell()
         }
-        let cellType = element.cellType()
+        let cellType = cellTypeForElement(element)
         let cellId = "\(cellType)"
         tableView.registerClass(cellType, forCellReuseIdentifier: cellId)
         let cell = tableView.dequeueReusableCellWithIdentifier(cellId, forIndexPath: indexPath)
-        element.configureCell(cell, tableView: tableView, indexPath: indexPath)
+        configureCell(element, cell: cell, tableView: tableView, indexPath: indexPath)
         return cell
     }
     
@@ -90,7 +95,7 @@ class PageViewController<Element: ElementListable>: UITableViewController {
             return []
         }
         var rowActions = [UITableViewRowAction]()
-        for editAction in element.editActions() {
+        for editAction in editActions?(element) ?? [] {
             let rowAction = UITableViewRowAction(style: editAction.style, title: editAction.title) {
                 [weak self] _, indexPath in
                 tableView.setEditing(false, animated: true)

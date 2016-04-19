@@ -8,7 +8,7 @@
 
 import UIKit
 
-class BookViewController<Element: ElementListable>: MultiPageViewController {
+class BookViewController<Element>: MultiPageViewController {
     
     var bookPageViewControllers: [PageViewController<Element>] {
         return pageViewControllers as! [PageViewController]
@@ -22,10 +22,10 @@ class BookViewController<Element: ElementListable>: MultiPageViewController {
     }
     var elementTouched: ((Element, UITableViewCell) -> Void)?
     
-    init(book: Book<Element>) {
+    init(book: Book<Element>, cellTypeForElement: Element -> UITableViewCell.Type, configureCell: (Element, cell: UITableViewCell, tableView: UITableView, indexPath: NSIndexPath) -> Void) {
         var pageViewControllers = [PageViewController<Element>]()
         for page in book.pages {
-            let pageViewController = PageViewController(page: page)
+            let pageViewController = PageViewController(page: page, cellTypeForElement: cellTypeForElement, configureCell: configureCell)
             pageViewControllers.append(pageViewController)
         }
         super.init(pageViewControllers: pageViewControllers)
