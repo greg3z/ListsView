@@ -54,6 +54,12 @@ class PageViewController<Element>: UITableViewController {
         refreshCallback?()
     }
     
+    func reloadVisibleCells() {
+        if isViewLoaded() {
+            tableView.reloadRowsAtIndexPaths(tableView.indexPathsForVisibleRows ?? [], withRowAnimation: .None)
+        }
+    }
+    
     // UITableViewDataSource
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {

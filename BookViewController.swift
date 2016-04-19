@@ -48,6 +48,12 @@ class BookViewController<Element>: MultiPageViewController {
         }
     }
     
+    func reloadVisibleCells() {
+        for pageViewController in bookPageViewControllers {
+            pageViewController.reloadVisibleCells()
+        }
+    }
+    
     func reloadData() {
         for pageViewController in bookPageViewControllers {
             pageViewController.tableView.reloadData()

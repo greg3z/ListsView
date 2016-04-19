@@ -12,15 +12,38 @@ class SelectableBookViewController<Element: Hashable>: BookViewController<Elemen
     
     var selectedElements: Set<Element>
     var configureSelectableCell: ((Element, cell: UITableViewCell, tableView: UITableView, indexPath: NSIndexPath, selected: Bool) -> Void)?
+    let tickStyle: TickStyle
     
-    init(book: Book<Element>, selectedElements: Set<Element> = [], cellTypeForElement: Element -> UITableViewCell.Type) {
+    init(book: Book<Element>, selectedElements: Set<Element> = [], tickStyle: TickStyle = .Single, cellTypeForElement: Element -> UITableViewCell.Type) {
         self.selectedElements = selectedElements
+        self.tickStyle = tickStyle
         super.init(book: book, cellTypeForElement: cellTypeForElement)
         configureCell = {
             [weak self] element, cell, tableView, indexPath in
             let selectedElement = self?.selectedElements.contains(element) ?? false
             self?.configureSelectableCell?(element, cell: cell, tableView: tableView, indexPath: indexPath, selected: selectedElement)
         }
+        elementTouched = {
+            element, cell in
+            self.elementSelected(element)
+        }
     }
     
+    func elementSelected(element: Element) {
+        if selectedElements.contains(element) {
+            selectedElements.remove(element)
+        }
+        else {
+            if tickStyle == .Single {
+                selectedElements.removeAll()
+            }
+            selectedElements.insert(element)
+        }
+        reloadVisibleCells()
+    }
+    
+}
+
+enum TickStyle {
+    case Single, Multiple
 }
