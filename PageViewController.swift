@@ -23,7 +23,6 @@ class PageViewController<Element: ElementListable>: UITableViewController {
     }
     var elementTouched: ((Element, UITableViewCell) -> Void)?
     var elementAction: ((Element, String) -> Void)?
-    var context: CellTypeContext? = nil
     
     init(page: Page<Element>, style: UITableViewStyle = .Plain) {
         self.page = page
@@ -69,11 +68,11 @@ class PageViewController<Element: ElementListable>: UITableViewController {
         guard let element = page[indexPath] else {
             return UITableViewCell()
         }
-        let cellType = element.cellType(context)
+        let cellType = element.cellType()
         let cellId = "\(cellType)"
         tableView.registerClass(cellType, forCellReuseIdentifier: cellId)
         let cell = tableView.dequeueReusableCellWithIdentifier(cellId, forIndexPath: indexPath)
-        element.configureCell(cell, tableView: tableView, indexPath: indexPath, context: context)
+        element.configureCell(cell, tableView: tableView, indexPath: indexPath)
         return cell
     }
     

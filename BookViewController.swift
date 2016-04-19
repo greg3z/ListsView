@@ -13,13 +13,6 @@ class BookViewController<Element: ElementListable>: MultiPageViewController {
     var bookPageViewControllers: [PageViewController<Element>] {
         return pageViewControllers as! [PageViewController]
     }
-    var context: CellTypeContext? = nil {
-        didSet {
-            for pageViewController in bookPageViewControllers {
-                pageViewController.context = context
-            }
-        }
-    }
     var refreshCallback: (Void -> Void)? {
         didSet {
             for pageViewController in bookPageViewControllers {

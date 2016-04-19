@@ -11,25 +11,21 @@ import UIKit
 
 protocol ElementListable: Hashable {
     
-    func cellType(context: CellTypeContext?) -> UITableViewCell.Type
-    func configureCell(cell: UITableViewCell, tableView: UITableView, indexPath: NSIndexPath, context: CellTypeContext?)
+    func cellType() -> UITableViewCell.Type
+    func configureCell(cell: UITableViewCell, tableView: UITableView, indexPath: NSIndexPath)
     func editActions() -> [EditAction]
     
 }
 
 extension ElementListable {
     
-    func cellType(context: CellTypeContext?) -> UITableViewCell.Type {
+    func cellType() -> UITableViewCell.Type {
         return UITableViewCell.self
     }
     
     func editActions() -> [EditAction] {
         return []
     }
-    
-}
-
-protocol CellTypeContext {
     
 }
 
@@ -59,8 +55,4 @@ extension PageIndex {
         self.init(sectionsSize: [], currentIndex: (section: indexPath.section, element: indexPath.row))
     }
     
-}
-
-enum TickStyle {
-    case None, Single, Multiple
 }
