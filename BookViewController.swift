@@ -29,10 +29,20 @@ class BookViewController<Element>: UIViewController {
         }
     }
     
-    init(book: Book<Element>, cellTypeForElement: Element -> UITableViewCell.Type) {
-        self.book = book
+    init(data: Book<Element>, cellTypeForElement: Element -> UITableViewCell.Type) {
+        self.book = data
         self.cellTypeForElement = cellTypeForElement
         super.init(nibName: nil, bundle: nil)
+    }
+    
+    convenience init(data: Page<Element>, cellTypeForElement: Element -> UITableViewCell.Type) {
+        let book = Book(pages: [data])
+        self.init(data: book, cellTypeForElement: cellTypeForElement)
+    }
+    
+    convenience init(data: [Element], cellTypeForElement: Element -> UITableViewCell.Type) {
+        let book = Book(data)
+        self.init(data: book, cellTypeForElement: cellTypeForElement)
     }
     
     override func viewDidLoad() {

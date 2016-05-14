@@ -17,7 +17,7 @@ class SelectableBookViewController<Element: Hashable>: BookViewController<Elemen
     init(book: Book<Element>, selectedElements: Set<Element> = [], tickStyle: TickStyle = .Single, cellTypeForElement: Element -> UITableViewCell.Type) {
         self.selectedElements = selectedElements
         self.tickStyle = tickStyle
-        super.init(book: book, cellTypeForElement: cellTypeForElement)
+        super.init(data: book, cellTypeForElement: cellTypeForElement)
         configureCell = {
             [weak self] element, cell, tableView, indexPath in
             let selectedElement = self?.selectedElements.contains(element) ?? false
