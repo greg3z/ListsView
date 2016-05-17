@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MultiPageView: UIViewController, UIPageViewControllerDataSource {
+final class MultiPageView: UIViewController, UIPageViewControllerDataSource {
     
     let views: [UIViewController]
     

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ListsView<Element>: UIViewController {
+final class ListsView<Element>: UIViewController {
     
     let book: Book<Element>
     let cellType: (Element -> UITableViewCell.Type)?

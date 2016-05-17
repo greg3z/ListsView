@@ -8,7 +8,7 @@
 
 import UIKit
 
-class PageView<Element>: UITableViewController {
+final class PageView<Element>: UITableViewController {
     
     var page: Page<Element> {
         didSet {
