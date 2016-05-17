@@ -29,20 +29,20 @@ final class ListsView<Element>: UIViewController {
         }
     }
     
-    init(data: Book<Element>, cellType: (Element -> UITableViewCell.Type)? = nil) {
-        self.book = data
+    init(elements: Book<Element>, cellType: (Element -> UITableViewCell.Type)? = nil) {
+        self.book = elements
         self.cellType = cellType
         super.init(nibName: nil, bundle: nil)
     }
     
-    convenience init(data: Page<Element>, cellType: (Element -> UITableViewCell.Type)? = nil) {
-        let book = Book(pages: [data])
-        self.init(data: book, cellType: cellType)
+    convenience init(elements: Page<Element>, cellType: (Element -> UITableViewCell.Type)? = nil) {
+        let book = Book(pages: [elements])
+        self.init(elements: book, cellType: cellType)
     }
     
-    convenience init(data: [Element], cellType: (Element -> UITableViewCell.Type)? = nil) {
-        let book = Book(data)
-        self.init(data: book, cellType: cellType)
+    convenience init(elements: [Element], cellType: (Element -> UITableViewCell.Type)? = nil) {
+        let book = Book(elements)
+        self.init(elements: book, cellType: cellType)
     }
     
     override func viewDidLoad() {
