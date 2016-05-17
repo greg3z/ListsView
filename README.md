@@ -1,6 +1,6 @@
 # ListsView
 
-ListsView allow you to display different kinds of lists, depending on the type of collection you'll give it.
+ListsView allows you to display different kinds of lists, depending on the type of collection you'll give it.
 
 - Array -> flat list
 - Page -> sectioned list
