@@ -14,7 +14,7 @@ class SelectableBookViewController<Element: Hashable>: BookViewController<Elemen
     var configureSelectableCell: ((Element, cell: UITableViewCell, tableView: UITableView, indexPath: NSIndexPath, selected: Bool) -> Void)?
     let tickStyle: TickStyle
     
-    init(book: Book<Element>, selectedElements: Set<Element> = [], tickStyle: TickStyle = .Single, cellTypeForElement: Element -> UITableViewCell.Type) {
+    init(book: Book<Element>, selectedElements: Set<Element> = [], tickStyle: TickStyle = .Single, cellTypeForElement: (Element -> UITableViewCell.Type)? = nil) {
         self.selectedElements = selectedElements
         self.tickStyle = tickStyle
         super.init(data: book, cellTypeForElement: cellTypeForElement)
