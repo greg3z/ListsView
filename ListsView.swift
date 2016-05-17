@@ -11,7 +11,7 @@ import UIKit
 final class ListsView<Element>: UIViewController {
     
     let book: Book<Element>
-    let cellType: (Element -> UITableViewCell.Type)?
+    var cellType: (Element -> UITableViewCell.Type)?
     var pageViews = [PageView<Element>]()
     var refreshCallback: (Void -> Void)? {
         didSet {

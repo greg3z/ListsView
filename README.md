@@ -10,17 +10,23 @@ See [Book](https://github.com/greg3z/Book) for the Page and Book collection type
 
 Once initialised with the appropriate CollectionType, you can set 3 closures to specify how your list works:
 
+### cellType
+
 ```swift
-let cellType: Element -> UITableViewCell.Type
+var cellType: Element -> UITableViewCell.Type
 ```
 
 cellType allows you to specify the UITableViewCell subclass to use for a given element. It allows you to use different kind of cells, ListsView will take care of dequeuing the appropriate cell for your element. If you don't specify it, UITableViewCell will be used by default.
+
+### configureCell
 
 ```swift
 var configureCell: (Element, UITableViewCell, UITableView, NSIndexPath) -> Void
 ```
 
 configureCell let you populate a given cell with the data of a given element. The table view and index path are communicated through the closure for specific needs, such as testing this is still the current cell in case of asynchronous task, like loading an image from the network.
+
+### elementTouched
 
 ```swift
 var elementTouched: (Element, UITableViewCell) -> Void
