@@ -1,5 +1,5 @@
 //
-//  MultiPageViewController.swift
+//  MultiPageView.swift
 //  FormViewControllerExample
 //
 //  Created by Grégoire Lhotellier on 18/04/2016.
@@ -8,12 +8,12 @@
 
 import UIKit
 
-class MultiPageViewController: UIViewController, UIPageViewControllerDataSource {
+class MultiPageView: UIViewController, UIPageViewControllerDataSource {
     
-    let pageViewControllers: [UIViewController]
+    let views: [UIViewController]
     
-    init(pageViewControllers: [UIViewController]) {
-        self.pageViewControllers = pageViewControllers
+    init(views: [UIViewController]) {
+        self.views = views
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -24,13 +24,13 @@ class MultiPageViewController: UIViewController, UIPageViewControllerDataSource 
     override func viewDidLoad() {
         super.viewDidLoad()
         let controller: UIViewController
-        if pageViewControllers.count == 1 {
-            controller = pageViewControllers.first!
+        if views.count == 1 {
+            controller = views.first!
         }
         else {
             let pageController = UIPageViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
             pageController.dataSource = self
-            pageController.setViewControllers([pageViewControllers.first!], direction: .Forward, animated: false, completion: nil)
+            pageController.setViewControllers([views.first!], direction: .Forward, animated: false, completion: nil)
             controller = pageController
         }
         controller.view.frame = view.bounds
@@ -38,18 +38,18 @@ class MultiPageViewController: UIViewController, UIPageViewControllerDataSource 
         addChildViewController(controller)
     }
     
-    // UIPageViewControllerDataSource
+    // UIPageViewDataSource
     
     func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
-        if let index = pageViewControllers.indexOf(viewController) where index > 0 {
-            return pageViewControllers[index - 1]
+        if let index = views.indexOf(viewController) where index > 0 {
+            return views[index - 1]
         }
         return nil
     }
     
     func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
-        if let index = pageViewControllers.indexOf(viewController) where index < pageViewControllers.count - 1 {
-            return pageViewControllers[index + 1]
+        if let index = views.indexOf(viewController) where index < views.count - 1 {
+            return views[index + 1]
         }
         return nil
     }

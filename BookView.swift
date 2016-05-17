@@ -1,5 +1,5 @@
 //
-//  MultiBookViewController2.swift
+//  MultiBookView2.swift
 //  FormViewController
 //
 //  Created by Grégoire Lhotellier on 01/04/2016.
@@ -8,23 +8,23 @@
 
 import UIKit
 
-class BookViewController<Element>: UIViewController {
+class BookView<Element>: UIViewController {
     
     let book: Book<Element>
     let cellType: (Element -> UITableViewCell.Type)?
-    var pageViewControllers = [PageViewController<Element>]()
+    var pageViews = [PageView<Element>]()
     var refreshCallback: (Void -> Void)? {
         didSet {
-            for pageViewController in pageViewControllers {
-                pageViewController.refreshCallback = refreshCallback
+            for pageView in pageViews {
+                pageView.refreshCallback = refreshCallback
             }
         }
     }
     var elementTouched: ((Element, UITableViewCell) -> Void)?
     var configureCell: ((Element, cell: UITableViewCell, tableView: UITableView, indexPath: NSIndexPath) -> Void)? {
         didSet {
-            for pageViewController in pageViewControllers {
-                pageViewController.configureCell = configureCell
+            for pageView in pageViews {
+                pageView.configureCell = configureCell
             }
         }
     }
@@ -48,32 +48,32 @@ class BookViewController<Element>: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         for page in book.pages {
-            let pageViewController = PageViewController(page: page, cellType: cellType)
-            pageViewController.elementTouched = elementTouched
-            pageViewController.configureCell = configureCell
-            pageViewControllers.append(pageViewController)
+            let pageView = PageView(page: page, cellType: cellType)
+            pageView.elementTouched = elementTouched
+            pageView.configureCell = configureCell
+            pageViews.append(pageView)
         }
-        let multiPageViewController = MultiPageViewController(pageViewControllers: pageViewControllers)
-        multiPageViewController.view.frame = view.bounds
-        view.addSubview(multiPageViewController.view)
-        addChildViewController(multiPageViewController)
+        let multiPageView = MultiPageView(views: pageViews)
+        multiPageView.view.frame = view.bounds
+        view.addSubview(multiPageView.view)
+        addChildViewController(multiPageView)
     }
     
     func reloadVisibleCells() {
-        for pageViewController in pageViewControllers {
-            pageViewController.reloadVisibleCells()
+        for pageView in pageViews {
+            pageView.reloadVisibleCells()
         }
     }
     
     func reloadData() {
-        for pageViewController in pageViewControllers {
-            pageViewController.tableView.reloadData()
+        for pageView in pageViews {
+            pageView.tableView.reloadData()
         }
     }
     
     func endRefreshing() {
-        for pageViewController in pageViewControllers {
-            pageViewController.refreshControl?.endRefreshing()
+        for pageView in pageViews {
+            pageView.refreshControl?.endRefreshing()
         }
     }
     

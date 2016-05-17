@@ -1,5 +1,5 @@
 //
-//  SelectableBookViewController.swift
+//  SelectableBookView.swift
 //  CollectionControllerExample
 //
 //  Created by Grégoire Lhotellier on 19/04/2016.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SelectableBookViewController<Element: Hashable>: BookViewController<Element> {
+class SelectableBookView<Element: Hashable>: BookView<Element> {
     
     var selectedElements: Set<Element>
     var configureSelectableCell: ((Element, cell: UITableViewCell, tableView: UITableView, indexPath: NSIndexPath, selected: Bool) -> Void)?
