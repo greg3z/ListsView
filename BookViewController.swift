@@ -11,7 +11,7 @@ import UIKit
 class BookViewController<Element>: UIViewController {
     
     let book: Book<Element>
-    let cellTypeForElement: (Element -> UITableViewCell.Type)?
+    let cellType: (Element -> UITableViewCell.Type)?
     var pageViewControllers = [PageViewController<Element>]()
     var refreshCallback: (Void -> Void)? {
         didSet {
@@ -29,26 +29,26 @@ class BookViewController<Element>: UIViewController {
         }
     }
     
-    init(data: Book<Element>, cellTypeForElement: (Element -> UITableViewCell.Type)? = nil) {
+    init(data: Book<Element>, cellType: (Element -> UITableViewCell.Type)? = nil) {
         self.book = data
-        self.cellTypeForElement = cellTypeForElement
+        self.cellType = cellType
         super.init(nibName: nil, bundle: nil)
     }
     
-    convenience init(data: Page<Element>, cellTypeForElement: (Element -> UITableViewCell.Type)? = nil) {
+    convenience init(data: Page<Element>, cellType: (Element -> UITableViewCell.Type)? = nil) {
         let book = Book(pages: [data])
-        self.init(data: book, cellTypeForElement: cellTypeForElement)
+        self.init(data: book, cellType: cellType)
     }
     
-    convenience init(data: [Element], cellTypeForElement: (Element -> UITableViewCell.Type)? = nil) {
+    convenience init(data: [Element], cellType: (Element -> UITableViewCell.Type)? = nil) {
         let book = Book(data)
-        self.init(data: book, cellTypeForElement: cellTypeForElement)
+        self.init(data: book, cellType: cellType)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         for page in book.pages {
-            let pageViewController = PageViewController(page: page, cellTypeForElement: cellTypeForElement)
+            let pageViewController = PageViewController(page: page, cellType: cellType)
             pageViewController.elementTouched = elementTouched
             pageViewController.configureCell = configureCell
             pageViewControllers.append(pageViewController)

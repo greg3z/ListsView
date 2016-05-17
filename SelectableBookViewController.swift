@@ -14,10 +14,10 @@ class SelectableBookViewController<Element: Hashable>: BookViewController<Elemen
     var configureSelectableCell: ((Element, cell: UITableViewCell, tableView: UITableView, indexPath: NSIndexPath, selected: Bool) -> Void)?
     let tickStyle: TickStyle
     
-    init(book: Book<Element>, selectedElements: Set<Element> = [], tickStyle: TickStyle = .Single, cellTypeForElement: (Element -> UITableViewCell.Type)? = nil) {
+    init(book: Book<Element>, selectedElements: Set<Element> = [], tickStyle: TickStyle = .Single, cellType: (Element -> UITableViewCell.Type)? = nil) {
         self.selectedElements = selectedElements
         self.tickStyle = tickStyle
-        super.init(data: book, cellTypeForElement: cellTypeForElement)
+        super.init(data: book, cellType: cellType)
         configureCell = {
             [weak self] element, cell, tableView, indexPath in
             let selectedElement = self?.selectedElements.contains(element) ?? false

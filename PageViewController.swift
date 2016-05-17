@@ -25,11 +25,11 @@ class PageViewController<Element>: UITableViewController {
     var editActions: (Element -> [EditAction])?
     var elementAction: ((Element, String) -> Void)?
     var configureCell: ((Element, cell: UITableViewCell, tableView: UITableView, indexPath: NSIndexPath) -> Void)?
-    let cellTypeForElement: (Element -> UITableViewCell.Type)?
+    let cellType: (Element -> UITableViewCell.Type)?
     
-    init(page: Page<Element>, style: UITableViewStyle = .Plain, cellTypeForElement: (Element -> UITableViewCell.Type)? = nil) {
+    init(page: Page<Element>, style: UITableViewStyle = .Plain, cellType: (Element -> UITableViewCell.Type)? = nil) {
         self.page = page
-        self.cellTypeForElement = cellTypeForElement
+        self.cellType = cellType
         super.init(style: style)
     }
     
@@ -78,9 +78,9 @@ class PageViewController<Element>: UITableViewController {
         guard let element = page[indexPath] else {
             return UITableViewCell()
         }
-        let cellType = cellTypeForElement?(element) ?? UITableViewCell.self
-        let cellId = "\(cellType)"
-        tableView.registerClass(cellType, forCellReuseIdentifier: cellId)
+        let cellClass = cellType?(element) ?? UITableViewCell.self
+        let cellId = "\(cellClass)"
+        tableView.registerClass(cellClass, forCellReuseIdentifier: cellId)
         let cell = tableView.dequeueReusableCellWithIdentifier(cellId, forIndexPath: indexPath)
         configureCell?(element, cell: cell, tableView: tableView, indexPath: indexPath)
         return cell
