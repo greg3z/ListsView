@@ -1,6 +1,6 @@
 //
-//  LCListController.swift
-//  Kawet
+//  PageView.swift
+//  ListsView
 //
 //  Created by Grégoire Lhotellier on 12/01/2016.
 //  Copyright © 2016 Kawet. All rights reserved.

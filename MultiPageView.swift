@@ -1,6 +1,6 @@
 //
 //  MultiPageView.swift
-//  FormViewControllerExample
+//  ListsView
 //
 //  Created by Grégoire Lhotellier on 18/04/2016.
 //  Copyright © 2016 Grégoire Lhotellier. All rights reserved.

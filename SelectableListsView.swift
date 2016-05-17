@@ -1,6 +1,6 @@
 //
-//  SelectableBookView.swift
-//  CollectionControllerExample
+//  SelectableListsView.swift
+//  ListsView
 //
 //  Created by Grégoire Lhotellier on 19/04/2016.
 //  Copyright © 2016 Grégoire Lhotellier. All rights reserved.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SelectableBookView<Element: Hashable>: BookView<Element> {
+class SelectableListsView<Element: Hashable>: ListsView<Element> {
     
     var selectedElements: Set<Element>
     var configureSelectableCell: ((Element, cell: UITableViewCell, tableView: UITableView, indexPath: NSIndexPath, selected: Bool) -> Void)?

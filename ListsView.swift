@@ -1,6 +1,6 @@
 //
-//  MultiBookView2.swift
-//  FormViewController
+//  ListsView.swift
+//  ListsView
 //
 //  Created by Grégoire Lhotellier on 01/04/2016.
 //  Copyright © 2016 Grégoire Lhotellier. All rights reserved.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class BookView<Element>: UIViewController {
+class ListsView<Element>: UIViewController {
     
     let book: Book<Element>
     let cellType: (Element -> UITableViewCell.Type)?
