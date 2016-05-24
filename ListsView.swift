@@ -54,9 +54,7 @@ final class ListsView<Element>: UIViewController {
             pageViews.append(pageView)
         }
         let multiPageView = MultiPageView(views: pageViews)
-        multiPageView.view.frame = view.bounds
-        view.addSubview(multiPageView.view)
-        addChildViewController(multiPageView)
+        addChildView(multiPageView)
     }
     
     func reloadVisibleCells() {

@@ -33,9 +33,7 @@ final class MultiPageView: UIViewController, UIPageViewControllerDataSource {
             pageController.setViewControllers([views.first!], direction: .Forward, animated: false, completion: nil)
             controller = pageController
         }
-        controller.view.frame = view.bounds
-        view.addSubview(controller.view)
-        addChildViewController(controller)
+        addChildView(controller)
     }
     
     // UIPageViewDataSource
