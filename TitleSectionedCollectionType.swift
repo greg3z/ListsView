@@ -8,19 +8,19 @@
 
 import Foundation
 
-protocol TitleSectionedCollectionType: CollectionType {
+protocol TitleSectionedCollectionType: Collection {
     
     func numberOfSections() -> Int
-    func numberOfElementsInSections(section: Int) -> Int
-    func titleForSection(section: Int) -> String?
-    func elementAtSectionIndex(sectionIndex: Int, elementIndex: Int) -> Generator.Element?
+    func numberOfElementsInSections(_ section: Int) -> Int
+    func titleForSection(_ section: Int) -> String?
+    func elementAtSectionIndex(_ sectionIndex: Int, elementIndex: Int) -> Iterator.Element?
     
 }
 
 extension TitleSectionedCollectionType {
     
-    func elementAtIndexPath(indexPath: NSIndexPath) -> Generator.Element? {
-        return elementAtSectionIndex(indexPath.section, elementIndex: indexPath.row)
+    func elementAtIndexPath(_ indexPath: IndexPath) -> Iterator.Element? {
+        return elementAtSectionIndex((indexPath as NSIndexPath).section, elementIndex: (indexPath as NSIndexPath).row)
     }
     
 }
@@ -31,15 +31,15 @@ extension Array: TitleSectionedCollectionType {
         return 1
     }
     
-    func numberOfElementsInSections(section: Int) -> Int {
+    func numberOfElementsInSections(_ section: Int) -> Int {
         return count
     }
     
-    func titleForSection(section: Int) -> String? {
+    func titleForSection(_ section: Int) -> String? {
         return nil
     }
     
-    func elementAtSectionIndex(sectionIndex: Int, elementIndex: Int) -> Generator.Element? {
+    func elementAtSectionIndex(_ sectionIndex: Int, elementIndex: Int) -> Iterator.Element? {
         if sectionIndex == 0 && elementIndex < count {
             return self[elementIndex]
         }
@@ -54,15 +54,15 @@ extension Page: TitleSectionedCollectionType {
         return sections.count
     }
     
-    func numberOfElementsInSections(section: Int) -> Int {
+    func numberOfElementsInSections(_ section: Int) -> Int {
         return sections[section].count
     }
     
-    func titleForSection(section: Int) -> String? {
+    func titleForSection(_ section: Int) -> String? {
         return sections[section].title
     }
     
-    func elementAtSectionIndex(sectionIndex: Int, elementIndex: Int) -> Element? {
+    func elementAtSectionIndex(_ sectionIndex: Int, elementIndex: Int) -> Element? {
         let pageIndex = PageIndex(sectionsSize: [], currentIndex: (sectionIndex, elementIndex))
         return self[safe: pageIndex]
     }
@@ -71,10 +71,10 @@ extension Page: TitleSectionedCollectionType {
 
 protocol MultiTitleSectionedCollectionType {
     
-    typealias Collection: TitleSectionedCollectionType
+    associatedtype Collection: TitleSectionedCollectionType
     
     func numberOfPages() -> Int
-    func collectionForPage(pageIndex: Int) -> Collection
+    func collectionForPage(_ pageIndex: Int) -> Collection
     
 }
 
@@ -84,7 +84,7 @@ extension Book: MultiTitleSectionedCollectionType {
         return pages.count
     }
     
-    func collectionForPage(pageIndex: Int) -> Page<Element> {
+    func collectionForPage(_ pageIndex: Int) -> Page<Element> {
         return pages[pageIndex]
     }
     

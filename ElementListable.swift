@@ -12,7 +12,7 @@ import UIKit
 protocol ElementListable {
     
     func cellType() -> UITableViewCell.Type
-    func configureCell(cell: UITableViewCell)
+    func configureCell(_ cell: UITableViewCell)
     func editActions() -> [EditAction]
     
 }
