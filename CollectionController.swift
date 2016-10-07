@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CollectionController<Collection: TitleSectionedCollectionType>: UITableViewController where Collection.Generator.Element: ElementListable {
+class CollectionController<Collection: TitleSectionedCollectionType>: UITableViewController where Collection.Iterator.Element: ElementListable {
     
     var collection: Collection {
         didSet {
